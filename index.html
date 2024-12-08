@@ -23,7 +23,7 @@
     <div class="view container-wrapper" data-view-id="LISTING">
       <!-- Informações/Perfil do Podcast -->
       <header class="podcast-profile">
-        <figure class="podcast-profile__cover">
+        <figure class="podcast-profile__cover cover">
           <img
             src="https://jovemnerd.com.br/wp-content/themes/jovem-nerd-v9/assets/images/nc-feed.jpg"
             alt="Capa do Nerd Cast"
@@ -41,6 +41,109 @@
           </main>
         </article>
       </header>
+
+      <!-- Listagem dos episódios -->
+      <main class="episodios">
+        <header class="episodios__header">
+          <h2>Escute os episódios</h2>
+
+          <button class="cta cta--primary">
+            Novo
+            <span class="cta-icon cta-icon-is-right"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </span>
+          </button>
+        </header>
+
+        <ul class="episodios__list no-list">
+          <li class="episodios__item" data-episodio-id="1">
+            <main class="episodios-item__main">
+              <figure class="episodios-item__cover cover">
+                <img
+                  src="https://uploads.jovemnerd.com.br/wp-content/uploads/2024/12/nc961_sem_pauta_24_3000x3000px__56k6wcp0.jpg"
+                  alt="Capa do episódio 'NerdCast 950 - Qual é a pauta? O que você procura está aqui!'"
+                />
+              </figure>
+
+              <article class="episodios-item__info">
+                <header class="episodios-item__header">
+                  <h3>
+                    NerdCast 950 - Qual é a pauta? O que você procura está aqui!
+                  </h3>
+
+                  <div class="episodios-item__actions">
+                    <button class="cta cta--edit cta--only-icon">
+                      <span class="cta-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-6"
+                        >
+                          <path
+                            d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                    <button class="cta cta--delete cta--only-icon">
+                      <span class="cta-icon">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-6"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.07a3 3 0 0 1-2.991 2.77H8.084a3 3 0 0 1-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.346-9Zm5.48.058a.75.75 0 1 0-1.498-.058l-.347 9a.75.75 0 0 0 1.5.058l.345-9Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </header>
+
+                <div class="episodios-item__description">
+                  Projeto Velho Gostoso, nostalgia e o que seu algoritmo diz
+                  sobre você
+                </div>
+              </article>
+            </main>
+
+            <footer class="episodios-item__footer">
+              <figure class="episodios-item__audio-info">
+                <figcaption class="episodios-item__caption">
+                  Escute o episódio
+                  <a
+                    href="https://chrt.fm/track/GD6D57/https://nerdcast.jovemnerd.com.br/nerdcast_961_sempauta.mp3"
+                    >ou baixe o arquivo
+                  </a>
+                </figcaption>
+                <audio
+                  class="episodios-item__player"
+                  controls
+                  src="https://chrt.fm/track/GD6D57/https://nerdcast.jovemnerd.com.br/nerdcast_961_sempauta.mp3"
+                ></audio>
+              </figure>
+            </footer>
+          </li>
+        </ul>
+      </main>
     </div>
     <script src="scripts.js"></script>
   </body>
