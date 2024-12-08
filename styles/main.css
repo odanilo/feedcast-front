@@ -1,0 +1,90 @@
+:root {
+  --border-radius-xs: 0.25rem;
+  --border-radius-sm: 0.5rem;
+  --border-radius: 1rem;
+
+  --container-max-width: 800px;
+  --container-horizontal-spacing: 1.5rem;
+  --container-vertical-spacing: 3rem;
+
+  --font-sans: 'Noto Sans', ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-200: #e5e7eb;
+  --gray-300: #d1d5db;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --gray-600: #4b5563;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+  --gray-950: #020617;
+
+  --blue-100: #dbeafe;
+}
+
+body {
+  background-color: var(--gray-100);
+  color: var(--gray-700);
+  font-family: var(--font-sans);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-weight: 500;
+}
+
+.view {
+  padding: var(--container-vertical-spacing) var(--container-horizontal-spacing);
+}
+
+.container-wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: var(--container-max-width);
+}
+
+.podcast-profile {
+  display: flex;
+  gap: var(--container-horizontal-spacing);
+}
+
+.podcast-profile__cover {
+  aspect-ratio: 1/1;
+  background-color: var(--gray-100);
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  flex: 1;
+  overflow: hidden;
+}
+
+.podcast-profile__info {
+  flex: 2;
+}
+
+.podcast-profile__title {
+  color: var(--gray-900);
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+}
+
+.podcast-profile__author {
+  background-color: var(--blue-100);
+  border-radius: var(--border-radius-xs);
+  display: inline-flex;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0.5rem 0 0 0;
+  padding: 0.25rem 0.5rem;
+}
+
+.podcast-profile__description {
+  border-top: solid 1px var(--gray-200);
+  padding: 1rem 0 0 0;
+  margin: 1.5rem 0 0 0;
+}

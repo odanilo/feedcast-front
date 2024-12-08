@@ -1,16 +1,47 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./styles/reset.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
 
     <title>Projeto</title>
   </head>
 
   <body>
+    <!-- View de listagem de episódios de podcast -->
+    <div class="view container-wrapper" data-view-id="LISTING">
+      <!-- Informações/Perfil do Podcast -->
+      <header class="podcast-profile">
+        <figure class="podcast-profile__cover">
+          <img
+            src="https://jovemnerd.com.br/wp-content/themes/jovem-nerd-v9/assets/images/nc-feed.jpg"
+            alt="Capa do Nerd Cast"
+          />
+        </figure>
+
+        <article class="podcast-profile__info">
+          <header>
+            <h1 class="podcast-profile__title">NerdCast</h1>
+            <div class="podcast-profile__author">Jovem Nerd</div>
+          </header>
+
+          <main class="podcast-profile__description">
+            O mundo vira piada no Jovem Nerd
+          </main>
+        </article>
+      </header>
+    </div>
     <script src="scripts.js"></script>
   </body>
 </html>
