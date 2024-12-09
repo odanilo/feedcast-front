@@ -239,17 +239,25 @@ h5 {
 }
 
 /* Estilos do modal */
+.body--dialog-open {
+  overflow: hidden;
+}
+
 .dialog-root {
+  display: none;
   background: rgba(0, 0, 0, 0.4);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  display: flex;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(1px);
+}
+
+.body--dialog-open .dialog-root {
+  display: flex;
 }
 
 .dialog {
@@ -275,6 +283,10 @@ h5 {
 
 .dialog-header__title {
   font-weight: 600;
+}
+
+.dialog-header__close svg {
+  pointer-events: none;
 }
 
 .dialog__footer {
@@ -325,4 +337,14 @@ h5 {
 .form * + input,
 .form * + textarea {
   margin-top: 0.25rem;
+}
+
+.form__erros {
+  color: var(--red-700);
+  font-size: 12px;
+  padding: 0 0 0 1.5em;
+}
+
+.form__erros:has(li) {
+  margin: 1.5rem 0 0 0;
 }

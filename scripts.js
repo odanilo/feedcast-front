@@ -1,29 +1,99 @@
+const API_URL = 'http://127.0.0.1:5000';
+
+/*
+  --------------------------------------------------------------------------------------
+  Elementos que serão manipulados durante a aplicação
+  --------------------------------------------------------------------------------------
+*/
+const $body = document.querySelector('body');
+const $dialogRoot = document.getElementById('dialog-root');
+
+const $buttonAdicionarEpisodio = document.querySelector(
+  '[data-js="btn-adicionar-episodio"]'
+);
+const $formAdicionarEpisodio = document.querySelector(
+  '[data-js="form-adicionar-episodio"]'
+);
+
+/*
+  --------------------------------------------------------------------------------------
+  Função para manipular o dialog/modal
+  --------------------------------------------------------------------------------------
+*/
+const closeDialog = () => {
+  $body.classList.remove('body--dialog-open');
+};
+
+const openDialog = () => {
+  $body.classList.add('body--dialog-open');
+};
+
+const handleDialogClickEvents = (e) => {
+  const elemento = e.target;
+
+  if (
+    elemento.dataset.js === 'dialog-root' ||
+    elemento.dataset.js === 'close-dialog-btn' ||
+    elemento.dataset.js === 'cancel-dialog-btn'
+  ) {
+    closeDialog();
+  }
+};
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para adicionar um novo episódio
+  --------------------------------------------------------------------------------------
+*/
+const postEpisodio = async (formData) => {
+  const url = `${API_URL}/episodios`;
+
+  fetch(url, {
+    method: 'post',
+    body: formData,
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+};
+
+const handleAdicionarEpisodioSubmitForm = async (e) => {
+  const formData = new FormData(e.target);
+
+  postEpisodio(formData);
+  closeDialog();
+};
+
+/*
+  --------------------------------------------------------------------------------------
+  Adicionando listeners a elemento com funções que foram criadas acima
+  --------------------------------------------------------------------------------------
+*/
+$dialogRoot.addEventListener('click', handleDialogClickEvents);
+
+$buttonAdicionarEpisodio.addEventListener('click', () => {
+  $formAdicionarEpisodio.reset();
+  openDialog();
+});
+
+$formAdicionarEpisodio.addEventListener(
+  'submit',
+  handleAdicionarEpisodioSubmitForm
+);
 /*
   --------------------------------------------------------------------------------------
   Função para obter a lista existente do servidor via requisição GET
   --------------------------------------------------------------------------------------
 */
-const getList = async () => {
-  let url = 'http://127.0.0.1:5000/produtos';
-  fetch(url, {
-    method: 'get',
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      data.produtos.forEach(item => insertList(item.nome, item.quantidade, item.valor))
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-}
+const getList = async () => {};
 
 /*
   --------------------------------------------------------------------------------------
   Chamada da função para carregamento inicial dos dados
   --------------------------------------------------------------------------------------
 */
-getList()
-
+getList();
 
 /*
   --------------------------------------------------------------------------------------
@@ -39,14 +109,13 @@ const postItem = async (inputProduct, inputQuantity, inputPrice) => {
   let url = 'http://127.0.0.1:5000/produto';
   fetch(url, {
     method: 'post',
-    body: formData
+    body: formData,
   })
     .then((response) => response.json())
     .catch((error) => {
       console.error('Error:', error);
     });
-}
-
+};
 
 /*
   --------------------------------------------------------------------------------------
@@ -54,13 +123,12 @@ const postItem = async (inputProduct, inputQuantity, inputPrice) => {
   --------------------------------------------------------------------------------------
 */
 const insertButton = (parent) => {
-  let span = document.createElement("span");
-  let txt = document.createTextNode("\u00D7");
-  span.className = "close";
+  let span = document.createElement('span');
+  let txt = document.createTextNode('\u00D7');
+  span.className = 'close';
   span.appendChild(txt);
   parent.appendChild(span);
-}
-
+};
 
 /*
   --------------------------------------------------------------------------------------
@@ -68,21 +136,21 @@ const insertButton = (parent) => {
   --------------------------------------------------------------------------------------
 */
 const removeElement = () => {
-  let close = document.getElementsByClassName("close");
+  let close = document.getElementsByClassName('close');
   // var table = document.getElementById('myTable');
   let i;
   for (i = 0; i < close.length; i++) {
     close[i].onclick = function () {
       let div = this.parentElement.parentElement;
-      const nomeItem = div.getElementsByTagName('td')[0].innerHTML
-      if (confirm("Você tem certeza?")) {
-        div.remove()
-        deleteItem(nomeItem)
-        alert("Removido!")
+      const nomeItem = div.getElementsByTagName('td')[0].innerHTML;
+      if (confirm('Você tem certeza?')) {
+        div.remove();
+        deleteItem(nomeItem);
+        alert('Removido!');
       }
-    }
+    };
   }
-}
+};
 
 /*
   --------------------------------------------------------------------------------------
@@ -90,37 +158,37 @@ const removeElement = () => {
   --------------------------------------------------------------------------------------
 */
 const deleteItem = (item) => {
-  console.log(item)
+  console.log(item);
   let url = 'http://127.0.0.1:5000/produto?nome=' + item;
   fetch(url, {
-    method: 'delete'
+    method: 'delete',
   })
     .then((response) => response.json())
     .catch((error) => {
       console.error('Error:', error);
     });
-}
+};
 
 /*
   --------------------------------------------------------------------------------------
-  Função para adicionar um novo item com nome, quantidade e valor 
+  Função para adicionar um novo item com nome, quantidade e valor
   --------------------------------------------------------------------------------------
 */
 const newItem = () => {
-  let inputProduct = document.getElementById("newInput").value;
-  let inputQuantity = document.getElementById("newQuantity").value;
-  let inputPrice = document.getElementById("newPrice").value;
+  let inputProduct = document.getElementById('newInput').value;
+  let inputQuantity = document.getElementById('newQuantity').value;
+  let inputPrice = document.getElementById('newPrice').value;
 
   if (inputProduct === '') {
-    alert("Escreva o nome de um item!");
+    alert('Escreva o nome de um item!');
   } else if (isNaN(inputQuantity) || isNaN(inputPrice)) {
-    alert("Quantidade e valor precisam ser números!");
+    alert('Quantidade e valor precisam ser números!');
   } else {
-    insertList(inputProduct, inputQuantity, inputPrice)
-    postItem(inputProduct, inputQuantity, inputPrice)
-    alert("Item adicionado!")
+    insertList(inputProduct, inputQuantity, inputPrice);
+    postItem(inputProduct, inputQuantity, inputPrice);
+    alert('Item adicionado!');
   }
-}
+};
 
 /*
   --------------------------------------------------------------------------------------
@@ -128,7 +196,7 @@ const newItem = () => {
   --------------------------------------------------------------------------------------
 */
 const insertList = (nameProduct, quantity, price) => {
-  var item = [nameProduct, quantity, price]
+  var item = [nameProduct, quantity, price];
   var table = document.getElementById('myTable');
   var row = table.insertRow();
 
@@ -136,10 +204,10 @@ const insertList = (nameProduct, quantity, price) => {
     var cel = row.insertCell(i);
     cel.textContent = item[i];
   }
-  insertButton(row.insertCell(-1))
-  document.getElementById("newInput").value = "";
-  document.getElementById("newQuantity").value = "";
-  document.getElementById("newPrice").value = "";
+  insertButton(row.insertCell(-1));
+  document.getElementById('newInput').value = '';
+  document.getElementById('newQuantity').value = '';
+  document.getElementById('newPrice').value = '';
 
-  removeElement()
-}
+  removeElement();
+};

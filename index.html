@@ -47,7 +47,7 @@
         <header class="episodios__header">
           <h2>Escute os episódios</h2>
 
-          <button class="cta cta--primary">
+          <button class="cta cta--primary" data-js="btn-adicionar-episodio">
             Novo
             <span class="cta-icon cta-icon-is-right"
               ><svg
@@ -147,12 +147,15 @@
     </div>
 
     <!-- Um dialog simples contendo um form -->
-    <div class="dialog-root">
+    <div id="dialog-root" class="dialog-root" data-js="dialog-root">
       <dialog class="dialog" open id="dialog">
         <header class="dialog__header">
           <h2 class="dialog-header__title">Adicionar novo episódio</h2>
 
-          <button class="dialog-header__close cta cta--only-icon">
+          <button
+            class="dialog-header__close cta cta--only-icon"
+            data-js="close-dialog-btn"
+          >
             <svg
               class="cta-icon"
               xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +173,12 @@
         </header>
 
         <main class="dialog__content">
-          <form id="dialog-form" class="form" method="dialog">
+          <form
+            id="dialog-form"
+            class="form"
+            method="dialog"
+            data-js="form-adicionar-episodio"
+          >
             <label>
               <p class="form__label">
                 Título: <span class="form__label--is-required">*</span>
@@ -223,13 +231,15 @@
               />
             </label>
           </form>
+
+          <ul class="form__erros" data-js="erros-list"></ul>
         </main>
 
         <footer class="dialog__footer">
           <button
+            type="button"
             class="cta cta--button"
-            id="cancel"
-            type="reset"
+            data-js="cancel-dialog-btn"
             form="dialog-form"
           >
             Cancelar
@@ -238,6 +248,7 @@
             class="cta cta--button cta--primary"
             type="submit"
             form="dialog-form"
+            data-js="adicionar-episodio-submit-btn"
           >
             Adicionar
           </button>
