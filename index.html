@@ -145,6 +145,106 @@
         </ul>
       </main>
     </div>
+
+    <!-- Um dialog simples contendo um form -->
+    <div class="dialog-root">
+      <dialog class="dialog" open id="dialog">
+        <header class="dialog__header">
+          <h2 class="dialog-header__title">Adicionar novo episódio</h2>
+
+          <button class="dialog-header__close cta cta--only-icon">
+            <svg
+              class="cta-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </header>
+
+        <main class="dialog__content">
+          <form id="dialog-form" class="form" method="dialog">
+            <label>
+              <p class="form__label">
+                Título: <span class="form__label--is-required">*</span>
+              </p>
+              <input
+                type="text"
+                name="titulo"
+                id="titulo"
+                placeholder="Podcast 200"
+                required
+              />
+            </label>
+
+            <label>
+              <p class="form__label">
+                Descrição: <span class="form__label--is-required">*</span>
+              </p>
+              <textarea
+                name="descricao"
+                id="descricao"
+                rows="3"
+                placeholder="Descrição curta sobre o episódio"
+                required
+              ></textarea>
+            </label>
+
+            <label>
+              <p class="form__label">
+                Capa: <span class="form__label--is-required">*</span>
+              </p>
+              <input
+                type="text"
+                name="capa"
+                id="capa"
+                placeholder="URL da capa do episódio"
+                required
+              />
+            </label>
+
+            <label>
+              <p class="form__label">
+                Áudio: <span class="form__label--is-required">*</span>
+              </p>
+              <input
+                type="text"
+                name="audio"
+                id="audio"
+                placeholder="URL do arquivo de áudio do episódio"
+                required
+              />
+            </label>
+          </form>
+        </main>
+
+        <footer class="dialog__footer">
+          <button
+            class="cta cta--button"
+            id="cancel"
+            type="reset"
+            form="dialog-form"
+          >
+            Cancelar
+          </button>
+          <button
+            class="cta cta--button cta--primary"
+            type="submit"
+            form="dialog-form"
+          >
+            Adicionar
+          </button>
+        </footer>
+      </dialog>
+    </div>
+
     <script src="scripts.js"></script>
   </body>
 </html>
