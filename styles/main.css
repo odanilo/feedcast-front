@@ -207,6 +207,7 @@ h5 {
   align-items: center;
   display: flex;
   gap: var(--container-horizontal-spacing);
+  justify-content: space-between;
 }
 
 .episodios-item__actions {
