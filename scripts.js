@@ -55,7 +55,7 @@ const gerarCardEpisodioMarkup = ({ id, audio, capa, descricao, titulo }) => `
                 </svg>
               </span>
             </button>
-            <button class="cta cta--delete cta--only-icon">
+            <button class="cta cta--delete cta--only-icon" data-js="delete-episodio-btn" data-episodio-id="${id}">
               <span class="cta-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -119,12 +119,40 @@ const getListEpisodios = async () => {
 
     const response = await result.json();
     listEpisodios(response.episodios);
+
+    return response.episodios;
   } catch (error) {
     console.error(error.message);
   }
 };
 
 getListEpisodios();
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para deletar episódios
+  --------------------------------------------------------------------------------------
+*/
+const deleteEpisodio = async (episodioId) => {
+  const endpoint = `${API_URL}/episodios/${episodioId}`;
+
+  try {
+    const result = await fetch(endpoint, { method: 'delete' });
+
+    if (!result.ok) {
+      throw new Error(`Erro ao tentar deletar episódio: ${response.status}`);
+    }
+
+    await getListEpisodios();
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+const handleDeleteEpisodioClick = (e) => {
+  console.log(e.target);
+};
+
 /*
   --------------------------------------------------------------------------------------
   Função para manipular o dialog/modal
@@ -156,22 +184,27 @@ const handleDialogClickEvents = (e) => {
   --------------------------------------------------------------------------------------
 */
 const postEpisodio = async (formData) => {
-  const url = `${API_URL}/episodios`;
+  const endpoint = `${API_URL}/episodios`;
 
-  fetch(url, {
-    method: 'post',
-    body: formData,
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error('Error:', error);
-    });
+  try {
+    const result = await fetch(endpoint, { method: 'post', body: formData });
+
+    if (!result.ok) {
+      throw new Error(
+        `Erro inesperado ao tentar adicionar episódio: ${response.status}`
+      );
+    }
+
+    await getListEpisodios();
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 const handleAdicionarEpisodioSubmitForm = async (e) => {
   const formData = new FormData(e.target);
 
-  postEpisodio(formData);
+  await postEpisodio(formData);
   closeDialog();
 };
 
@@ -191,6 +224,19 @@ $formAdicionarEpisodio.addEventListener(
   'submit',
   handleAdicionarEpisodioSubmitForm
 );
+
+$listEpisodiosContainer.addEventListener('click', async (e) => {
+  console.log(e.target);
+
+  if (e.target.dataset.js === 'delete-episodio-btn') {
+    const episodioId = Number(e.target.dataset.episodioId);
+
+    if (episodioId && typeof episodioId === 'number') {
+      await deleteEpisodio(episodioId);
+      console.log('deletou');
+    }
+  }
+});
 /*
   --------------------------------------------------------------------------------------
   Função para obter a lista existente do servidor via requisição GET

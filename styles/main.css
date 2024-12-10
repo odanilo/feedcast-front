@@ -37,7 +37,22 @@
 }
 
 body {
-  background-color: var(--gray-100);
+  background-image: linear-gradient(
+    0deg,
+    hsl(0deg 0% 100%) 0%,
+    hsl(220deg 14% 100%) 8%,
+    hsl(220deg 14% 99%) 17%,
+    hsl(220deg 14% 99%) 25%,
+    hsl(220deg 14% 99%) 33%,
+    hsl(220deg 14% 98%) 42%,
+    hsl(220deg 14% 98%) 50%,
+    hsl(220deg 14% 98%) 58%,
+    hsl(220deg 14% 97%) 67%,
+    hsl(220deg 14% 97%) 75%,
+    hsl(220deg 14% 97%) 83%,
+    hsl(220deg 14% 96%) 92%,
+    hsl(220deg 14% 96%) 100%
+  );
   color: var(--gray-700);
   font-family: var(--font-sans);
 }
@@ -176,6 +191,7 @@ h5 {
 .episodios__list {
   display: flex;
   gap: var(--container-horizontal-spacing);
+  flex-direction: column;
   flex-wrap: wrap;
   margin: 1.5rem 0 0 0;
 }
@@ -188,6 +204,7 @@ h5 {
   flex-direction: column;
   gap: var(--container-horizontal-spacing);
   padding: var(--container-horizontal-spacing);
+  width: 100%;
 }
 
 .episodios-item__main {
@@ -214,6 +231,11 @@ h5 {
   display: flex;
   flex-shrink: 0;
   gap: 0.25rem;
+}
+
+.episodios-item__actions .cta-icon,
+.episodios-item__actions svg {
+  pointer-events: none;
 }
 
 .episodios-item__description {
