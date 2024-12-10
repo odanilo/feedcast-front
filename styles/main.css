@@ -293,8 +293,12 @@ h5 {
   border: 0;
   padding: var(--container-horizontal-spacing);
   max-height: calc(100vh - 10%);
-  display: flex;
+  display: none;
   flex-direction: column;
+}
+
+.dialog--is-open {
+  display: flex;
 }
 
 .dialog__header {

@@ -15,6 +15,10 @@ const $formAdicionarEpisodio = document.querySelector(
   '[data-js="form-adicionar-episodio"]'
 );
 
+const $formAtualizarEpisodio = document.querySelector(
+  '[data-js="form-atualizar-episodio"]'
+);
+
 const $listEpisodiosContainer = document.querySelector(
   '[data-js="list-episodios"]'
 );
@@ -41,7 +45,7 @@ const gerarCardEpisodioMarkup = ({ id, audio, capa, descricao, titulo }) => `
           </h3>
 
           <div class="episodios-item__actions">
-            <button class="cta cta--edit cta--only-icon">
+            <button class="cta cta--edit cta--only-icon" data-js="atualizar-episodio-btn" data-episodio-id="${id}">
               <span class="cta-icon">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -162,8 +166,35 @@ const closeDialog = () => {
   $body.classList.remove('body--dialog-open');
 };
 
-const openDialog = () => {
+const openDialog = (dialogName) => {
+  const dialogs = {
+    NOVO_EPISODIO: 'dialog-adicionar-episodio',
+    ATUALIZAR_EPISODIO: 'dialog-atualizar-episodio',
+  };
+
+  const dialogToShow = document.querySelector(
+    `[data-js="${dialogs[dialogName]}"]`
+  );
+
+  if (!dialogToShow) {
+    throw new Error(`Nenhum dialog com nome ${dialogName}`);
+  }
+
   $body.classList.add('body--dialog-open');
+
+  for (const dialog in dialogs) {
+    const dialogToHide = document.querySelector(
+      `[data-js="${dialogs[dialog]}"]`
+    );
+
+    if (!dialogToHide) {
+      throw new Error(`Nenhum dialog com nome ${dialogs[dialog]}`);
+    }
+
+    dialogToHide.classList.remove('dialog--is-open');
+  }
+
+  dialogToShow.classList.add('dialog--is-open');
 };
 
 const handleDialogClickEvents = (e) => {
@@ -210,6 +241,95 @@ const handleAdicionarEpisodioSubmitForm = async (e) => {
 
 /*
   --------------------------------------------------------------------------------------
+  Funções para buscar um episódio
+  --------------------------------------------------------------------------------------
+*/
+const getEpisodio = async (episodioId) => {
+  const endpoint = `${API_URL}/episodios/${episodioId}`;
+
+  try {
+    const result = await fetch(endpoint, { method: 'get' });
+
+    if (!result.ok) {
+      throw new Error(`Erro ao tentar deletar episódio: ${response.status}`);
+    }
+
+    return await result.json();
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para editar um episódio
+  --------------------------------------------------------------------------------------
+*/
+const editEpisodio = async (formData) => {
+  const episodioId = formData.get('id_episodio');
+
+  if (!episodioId) {
+    throw new Error('Não é possível atualizar um episódio sem um ID');
+  }
+
+  const endpoint = `${API_URL}/episodios/${episodioId}`;
+
+  try {
+    const result = await fetch(endpoint, { method: 'put', body: formData });
+
+    if (!result.ok) {
+      throw new Error(
+        `Erro inesperado ao tentar atualizar episódio: ${response.status}`
+      );
+    }
+
+    await getListEpisodios();
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+const atualizarFormFields = async (episodioId) => {
+  const episodio = await getEpisodio(episodioId);
+
+  if (!episodio) {
+    throw new Error(
+      `Episódio com id ${episodioId} não encontrado para atualizar`
+    );
+  }
+
+  const fields = [
+    { name: 'audio', value: episodio.audio },
+    { name: 'capa', value: episodio.capa },
+    { name: 'descricao', value: episodio.descricao },
+    { name: 'titulo', value: episodio.titulo },
+    { name: 'id_episodio', value: episodio.id },
+  ];
+
+  fields.forEach((field) => {
+    const input = $formAtualizarEpisodio.querySelector(
+      `[name="${field.name}"]`
+    );
+
+    if (!input) {
+      throw new Error(
+        `Não foi possível encontrar um campo com o name ${field.name}`
+      );
+    }
+
+    input.value = field.value;
+  });
+};
+
+const handleAtualizarEpisodioSubmitForm = async (e) => {
+  const formData = new FormData(e.target);
+
+  await editEpisodio(formData);
+  closeDialog();
+};
+
+/*
+  --------------------------------------------------------------------------------------
   Adicionando listeners a elemento com funções que foram criadas acima
   --------------------------------------------------------------------------------------
 */
@@ -217,7 +337,7 @@ $dialogRoot.addEventListener('click', handleDialogClickEvents);
 
 $buttonAdicionarEpisodio.addEventListener('click', () => {
   $formAdicionarEpisodio.reset();
-  openDialog();
+  openDialog('NOVO_EPISODIO');
 });
 
 $formAdicionarEpisodio.addEventListener(
@@ -226,17 +346,29 @@ $formAdicionarEpisodio.addEventListener(
 );
 
 $listEpisodiosContainer.addEventListener('click', async (e) => {
-  console.log(e.target);
-
   if (e.target.dataset.js === 'delete-episodio-btn') {
     const episodioId = Number(e.target.dataset.episodioId);
 
     if (episodioId && typeof episodioId === 'number') {
       await deleteEpisodio(episodioId);
-      console.log('deletou');
+    }
+  }
+
+  if (e.target.dataset.js === 'atualizar-episodio-btn') {
+    const episodioId = Number(e.target.dataset.episodioId);
+
+    if (episodioId && typeof episodioId === 'number') {
+      $formAtualizarEpisodio.reset();
+      openDialog('ATUALIZAR_EPISODIO');
+      await atualizarFormFields(episodioId);
     }
   }
 });
+
+$formAtualizarEpisodio.addEventListener(
+  'submit',
+  handleAtualizarEpisodioSubmitForm
+);
 /*
   --------------------------------------------------------------------------------------
   Função para obter a lista existente do servidor via requisição GET
@@ -314,7 +446,6 @@ const removeElement = () => {
   --------------------------------------------------------------------------------------
 */
 const deleteItem = (item) => {
-  console.log(item);
   let url = 'http://127.0.0.1:5000/produto?nome=' + item;
   fetch(url, {
     method: 'delete',
