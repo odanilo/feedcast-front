@@ -55,6 +55,7 @@ body {
   );
   color: var(--gray-700);
   font-family: var(--font-sans);
+  min-height: 100vh;
 }
 
 h1,
