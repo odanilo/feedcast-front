@@ -139,15 +139,17 @@ const inserirEpisodiosNaView = (episodios) => {
 const getListEpisodios = async () => {
   try {
     const { episodios } = await httpClient('episodios');
-    inserirEpisodiosNaView(episodios);
-
     return episodios;
   } catch (error) {
     console.error(error.message);
   }
 };
 
-getListEpisodios();
+const atualizarEpisodios = () => {
+  getListEpisodios().then((episodios) => inserirEpisodiosNaView(episodios));
+};
+
+atualizarEpisodios();
 
 /*
   --------------------------------------------------------------------------------------
@@ -156,12 +158,9 @@ getListEpisodios();
 */
 const deleteEpisodio = async (episodioId) => {
   try {
-    const result = await httpClient(`episodios/${episodioId}`, {
+    return await httpClient(`episodios/${episodioId}`, {
       method: 'DELETE',
     });
-    await getListEpisodios();
-
-    return result;
   } catch (error) {
     console.error(error.message);
   }
@@ -230,10 +229,7 @@ const handleDialogClickEvents = (e) => {
 */
 const postEpisodio = async (formData) => {
   try {
-    const result = await httpClient('/episodios', { body: formData });
-    await getListEpisodios();
-
-    return result;
+    return await httpClient('/episodios', { body: formData });
   } catch (error) {
     console.error(error.message);
   }
@@ -243,6 +239,7 @@ const handleAdicionarEpisodioSubmitForm = async (e) => {
   const formData = new FormData(e.target);
 
   await postEpisodio(formData);
+  atualizarEpisodios();
   closeDialog();
 };
 
@@ -272,13 +269,10 @@ const editEpisodio = async (formData) => {
   }
 
   try {
-    const result = await httpClient(`episodios/${episodioId}`, {
+    return await httpClient(`episodios/${episodioId}`, {
       method: 'PUT',
       body: formData,
     });
-    await getListEpisodios();
-
-    return result;
   } catch (error) {
     console.error(error.message);
   }
@@ -320,6 +314,7 @@ const handleAtualizarEpisodioSubmitForm = async (e) => {
   const formData = new FormData(e.target);
 
   await editEpisodio(formData);
+  atualizarEpisodios();
   closeDialog();
 };
 
@@ -346,6 +341,7 @@ $listEpisodiosContainer.addEventListener('click', async (e) => {
 
     if (episodioId && typeof episodioId === 'number') {
       await deleteEpisodio(episodioId);
+      atualizarEpisodios();
     }
   }
 
