@@ -174,6 +174,8 @@ const showView = (viewName) => {
   return viewToShow;
 };
 
+showView('EMPTY');
+
 /*
   --------------------------------------------------------------------------------------
   Funções para encontrar profile
@@ -209,7 +211,7 @@ const inserirProfileHtml = (profile) => {
   $title.textContent = profile.nome;
   $author.textContent = profile.autor;
   $description.textContent = profile.descricao;
-  $cover.setAttribute('src', profile.capa);
+  $cover.setAttribute('src', profile.capa || './img/capa-padrao-podcast.jpg');
   $cover.setAttribute('alt', `Capa do ${profile.nome}`);
 };
 
@@ -345,7 +347,12 @@ const inserirEpisodiosNaView = (episodios) => {
   if (!episodios) return;
 
   const markup = episodios
-    .map((episodio) => gerarCardEpisodioMarkup(episodio))
+    .map((episodio) =>
+      gerarCardEpisodioMarkup({
+        ...episodio,
+        capa: episodio.capa || './img/capa-padrao-podcast.jpg',
+      })
+    )
     .join('');
 
   $listEpisodiosContainer.innerHTML = markup;

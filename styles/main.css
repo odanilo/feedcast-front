@@ -78,13 +78,7 @@ h5 {
 .view {
   display: none;
   flex-direction: column;
-  min-height: 100vh;
   padding: var(--container-vertical-spacing) var(--container-horizontal-spacing);
-}
-
-[data-view-id='NO-PROFILE'] {
-  align-items: center;
-  justify-content: center;
 }
 
 .view--is-visible {
@@ -166,6 +160,22 @@ h5 {
 
 .cta--delete:hover {
   background-color: var(--red-200);
+}
+
+/* Estilos do header */
+.header {
+  display: flex;
+  justify-content: center;
+  padding-bottom: var(--container-vertical-spacing);
+  padding-top: calc(var(--container-vertical-spacing) * 2);
+}
+
+.header__logo {
+  max-width: 160px;
+}
+
+.header__logo svg {
+  width: 100%;
 }
 
 /* Estilos para o profile */
@@ -268,6 +278,7 @@ h5 {
 
 .episodios-item__info {
   flex: 4;
+  word-break: break-word;
 }
 
 .episodios-item__header {
