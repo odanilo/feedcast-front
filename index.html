@@ -51,7 +51,9 @@
         <h1>Não encontramos o perfil do seu podcast</h1>
 
         <footer class="podcast-profile-empty__actions">
-          <button class="cta cta--primary">Importar feed</button>
+          <button class="cta cta--primary" data-js="btn-importar-feed">
+            Importar feed
+          </button>
 
           <button class="cta cta--secondary" data-js="btn-adicionar-perfil">
             Criar perfil
@@ -81,29 +83,19 @@
       <!-- Informações/Perfil do Podcast -->
       <header class="podcast-profile">
         <figure class="podcast-profile__cover cover">
-          <img
-            data-js="profile-cover"
-            src="https://jovemnerd.com.br/wp-content/themes/jovem-nerd-v9/assets/images/nc-feed.jpg"
-            alt="Capa do Nerd Cast"
-          />
+          <img data-js="profile-cover" alt="" />
         </figure>
 
         <article class="podcast-profile__info">
           <header>
-            <h1 class="podcast-profile__title" data-js="profile-title">
-              NerdCast
-            </h1>
-            <div class="podcast-profile__author" data-js="profile-author">
-              Jovem Nerd
-            </div>
+            <h1 class="podcast-profile__title" data-js="profile-title">Nome</h1>
+            <div class="podcast-profile__author" data-js="profile-author"></div>
           </header>
 
           <main
             class="podcast-profile__description"
             data-js="profile-description"
-          >
-            O mundo vira piada no Jovem Nerd
-          </main>
+          ></main>
         </article>
       </header>
 
@@ -286,6 +278,75 @@
             type="submit"
             form="dialog-adicionar-perfil"
             data-js="adicionar-perfil-submit-btn"
+          >
+            Adicionar
+          </button>
+        </footer>
+      </dialog>
+
+      <!-- Dialog para adicionar episódio -->
+      <dialog class="dialog" open data-js="dialog-importar-feed">
+        <header class="dialog__header">
+          <h2 class="dialog-header__title">
+            Importar perfil e episódios via RSS Feed
+          </h2>
+
+          <button
+            class="dialog-header__close cta cta--only-icon"
+            data-js="close-dialog-btn"
+          >
+            <svg
+              class="cta-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </header>
+
+        <main class="dialog__content">
+          <form
+            id="dialog-importar-feed"
+            class="form"
+            method="dialog"
+            data-js="form-importar-feed"
+          >
+            <label>
+              <p class="form__label">
+                URL do feed rss: <span class="form__label--is-required">*</span>
+              </p>
+              <input
+                type="text"
+                name="feed"
+                id="feed"
+                placeholder="https://api.jovemnerd.com.br/feed-nerdcast/"
+                required
+              />
+            </label>
+          </form>
+        </main>
+
+        <footer class="dialog__footer">
+          <button
+            type="button"
+            class="cta cta--button"
+            data-js="cancel-dialog-btn"
+            form="dialog-importar-feed"
+          >
+            Cancelar
+          </button>
+          <button
+            class="cta cta--button cta--primary"
+            type="submit"
+            form="dialog-importar-feed"
+            data-js="importar-feed-submit-btn"
           >
             Adicionar
           </button>

@@ -76,12 +76,15 @@ h5 {
 }
 
 .view {
-  align-items: center;
   display: none;
-  justify-content: center;
   flex-direction: column;
   min-height: 100vh;
   padding: var(--container-vertical-spacing) var(--container-horizontal-spacing);
+}
+
+[data-view-id='NO-PROFILE'] {
+  align-items: center;
+  justify-content: center;
 }
 
 .view--is-visible {

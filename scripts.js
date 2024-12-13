@@ -53,6 +53,13 @@ const $formAdicionarPerfil = document.querySelector(
   '[data-js="form-adicionar-perfil"]'
 );
 
+const $buttonImportarFeed = document.querySelector(
+  '[data-js="btn-importar-feed"]'
+);
+const $formImportarFeed = document.querySelector(
+  '[data-js="form-importar-feed"]'
+);
+
 /*
   --------------------------------------------------------------------------------------
   Função para manipular o dialog/modal
@@ -68,6 +75,7 @@ const openDialog = (dialogName) => {
     ATUALIZAR_EPISODIO: 'dialog-atualizar-episodio',
     NOTIFICACAO: 'dialog-notification',
     NOVO_PERFIL: 'dialog-adicionar-perfil',
+    IMPORTAR_FEED: 'dialog-importar-feed',
   };
 
   const dialogToShow = document.querySelector(
@@ -545,6 +553,46 @@ const handleAtualizarEpisodioSubmitForm = async (e) => {
 
 /*
   --------------------------------------------------------------------------------------
+  Funções para importar feed
+  --------------------------------------------------------------------------------------
+*/
+const importarFeed = async (formData) => {
+  try {
+    return await httpClient('importacoes/feed-rss', { body: formData });
+  } catch (error) {
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de importar o feed: ${error.message}`,
+      titulo: 'Falha ao importar RSS Feed',
+    });
+  }
+};
+const handleImportarFeedSubmitForm = async (e) => {
+  const formData = new FormData(e.target);
+  const result = await importarFeed(formData);
+
+  if (!result) return;
+
+  openNotification({
+    tipo: 'success',
+    mensagem: `Seu perfil e episódios estão prontos para serem ouvidos!`,
+    titulo: 'Importação aconteceu com sucesso',
+  });
+
+  if (result.perfil?.nome) {
+    inserirProfileHtml(result.perfil);
+  } else {
+    handleBuscarProfile();
+  }
+
+  if (result.episodios && result.episodios.length > 0) {
+    inserirEpisodiosNaView(result.episodios);
+  }
+};
+
+/*
+  --------------------------------------------------------------------------------------
   Adicionando listeners a elementos com funções que foram criadas acima
   --------------------------------------------------------------------------------------
 */
@@ -590,3 +638,10 @@ $formAdicionarPerfil.addEventListener(
   'submit',
   handleAdicionarPerfilSubmitForm
 );
+
+$buttonImportarFeed.addEventListener('click', () => {
+  $formImportarFeed.reset();
+  openDialog('IMPORTAR_FEED');
+});
+
+$formImportarFeed.addEventListener('submit', handleImportarFeedSubmitForm);
