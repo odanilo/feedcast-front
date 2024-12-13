@@ -48,6 +48,82 @@ const $listEpisodiosContainer = document.querySelector(
 
 /*
   --------------------------------------------------------------------------------------
+  Função para manipular o dialog/modal
+  --------------------------------------------------------------------------------------
+*/
+const closeDialog = () => {
+  $body.classList.remove('body--dialog-open');
+};
+
+const openDialog = (dialogName) => {
+  const dialogs = {
+    NOVO_EPISODIO: 'dialog-adicionar-episodio',
+    ATUALIZAR_EPISODIO: 'dialog-atualizar-episodio',
+    NOTIFICACAO: 'dialog-notification',
+  };
+
+  const dialogToShow = document.querySelector(
+    `[data-js="${dialogs[dialogName]}"]`
+  );
+
+  if (!dialogToShow) {
+    throw new Error(`Nenhum dialog com nome ${dialogName}`);
+  }
+
+  $body.classList.add('body--dialog-open');
+
+  for (const dialog in dialogs) {
+    const dialogToHide = document.querySelector(
+      `[data-js="${dialogs[dialog]}"]`
+    );
+
+    if (!dialogToHide) {
+      throw new Error(`Nenhum dialog com nome ${dialogs[dialog]}`);
+    }
+
+    dialogToHide.classList.remove('dialog--is-open');
+  }
+
+  dialogToShow.classList.add('dialog--is-open');
+
+  return dialogToShow;
+};
+
+const openNotification = ({ titulo, mensagem, tipo } = {}) => {
+  const SUCCESS_CLASS = 'dialog--success';
+  const ERROR_CLASS = 'dialog--error';
+
+  const $dialog = openDialog('NOTIFICACAO');
+
+  $dialog.classList.remove(ERROR_CLASS);
+  $dialog.classList.remove(SUCCESS_CLASS);
+
+  if (tipo == 'error') {
+    $dialog.classList.add(ERROR_CLASS);
+  }
+
+  if (tipo == 'success') {
+    $dialog.classList.add(SUCCESS_CLASS);
+  }
+
+  $dialog.querySelector('[data-js="dialog-header"]').textContent = titulo;
+  $dialog.querySelector('[data-js="dialog-main"]').textContent = mensagem;
+};
+
+const handleDialogClickEvents = (e) => {
+  const elemento = e.target;
+
+  if (
+    elemento.dataset.js === 'dialog-root' ||
+    elemento.dataset.js === 'close-dialog-btn' ||
+    elemento.dataset.js === 'cancel-dialog-btn'
+  ) {
+    closeDialog();
+  }
+};
+
+/*
+  --------------------------------------------------------------------------------------
   Funções para listar episódios
   --------------------------------------------------------------------------------------
 */
@@ -129,6 +205,8 @@ const gerarCardEpisodioMarkup = ({ id, audio, capa, descricao, titulo }) => `
 `;
 
 const inserirEpisodiosNaView = (episodios) => {
+  if (!episodios) return;
+
   const markup = episodios
     .map((episodio) => gerarCardEpisodioMarkup(episodio))
     .join('');
@@ -141,6 +219,13 @@ const getListEpisodios = async () => {
     const { episodios } = await httpClient('episodios');
     return episodios;
   } catch (error) {
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de listar os episódios. ${error.message}`,
+      titulo: 'Falha ao buscar episódios',
+    });
+
     console.error(error.message);
   }
 };
@@ -162,64 +247,31 @@ const deleteEpisodio = async (episodioId) => {
       method: 'DELETE',
     });
   } catch (error) {
-    console.error(error.message);
-  }
-};
+    const errorMessage = error.message ? JSON.parse(error.message).message : '';
 
-const handleDeleteEpisodioClick = (e) => {
-  console.log(e.target);
-};
-
-/*
-  --------------------------------------------------------------------------------------
-  Função para manipular o dialog/modal
-  --------------------------------------------------------------------------------------
-*/
-const closeDialog = () => {
-  $body.classList.remove('body--dialog-open');
-};
-
-const openDialog = (dialogName) => {
-  const dialogs = {
-    NOVO_EPISODIO: 'dialog-adicionar-episodio',
-    ATUALIZAR_EPISODIO: 'dialog-atualizar-episodio',
-  };
-
-  const dialogToShow = document.querySelector(
-    `[data-js="${dialogs[dialogName]}"]`
-  );
-
-  if (!dialogToShow) {
-    throw new Error(`Nenhum dialog com nome ${dialogName}`);
-  }
-
-  $body.classList.add('body--dialog-open');
-
-  for (const dialog in dialogs) {
-    const dialogToHide = document.querySelector(
-      `[data-js="${dialogs[dialog]}"]`
-    );
-
-    if (!dialogToHide) {
-      throw new Error(`Nenhum dialog com nome ${dialogs[dialog]}`);
-    }
-
-    dialogToHide.classList.remove('dialog--is-open');
-  }
-
-  dialogToShow.classList.add('dialog--is-open');
-};
-
-const handleDialogClickEvents = (e) => {
-  const elemento = e.target;
-
-  if (
-    elemento.dataset.js === 'dialog-root' ||
-    elemento.dataset.js === 'close-dialog-btn' ||
-    elemento.dataset.js === 'cancel-dialog-btn'
-  ) {
     closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de deletar o seu episódio. ${errorMessage}`,
+      titulo: 'Falha ao deletar episódio',
+    });
+
+    console.error(errorMessage);
   }
+};
+
+const handleDeleteEpisodioClick = async (episodioId) => {
+  const episodioDeletado = await deleteEpisodio(episodioId);
+
+  if (!episodioDeletado) return;
+
+  openNotification({
+    tipo: 'success',
+    mensagem: `"${episodioDeletado.titulo}" removido da listagem`,
+    titulo: 'Episódio removido com sucesso',
+  });
+
+  atualizarEpisodios();
 };
 
 /*
@@ -231,16 +283,28 @@ const postEpisodio = async (formData) => {
   try {
     return await httpClient('/episodios', { body: formData });
   } catch (error) {
-    console.error(error.message);
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de adicionar o seu episódio: ${error.message}`,
+      titulo: 'Falha ao adicionar episódio',
+    });
   }
 };
 
 const handleAdicionarEpisodioSubmitForm = async (e) => {
   const formData = new FormData(e.target);
+  const episodioAdicionado = await postEpisodio(formData);
 
-  await postEpisodio(formData);
+  if (!episodioAdicionado) return;
+
+  openNotification({
+    tipo: 'success',
+    mensagem: `Você já pode escutar ${episodioAdicionado.titulo} na listagem`,
+    titulo: 'Episódio adicionado com sucesso',
+  });
+
   atualizarEpisodios();
-  closeDialog();
 };
 
 /*
@@ -252,7 +316,16 @@ const getEpisodio = async (episodioId) => {
   try {
     return await httpClient(`episodios/${episodioId}`);
   } catch (error) {
-    console.error(error.message);
+    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de buscar o seu episódio. ${errorMessage}`,
+      titulo: 'Falha ao buscar episódio',
+    });
+
+    console.error(errorMessage);
   }
 };
 
@@ -274,7 +347,16 @@ const editEpisodio = async (formData) => {
       body: formData,
     });
   } catch (error) {
-    console.error(error.message);
+    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de editar o seu episódio. ${errorMessage}`,
+      titulo: 'Falha ao editar episódio',
+    });
+
+    console.error(errorMessage);
   }
 };
 
@@ -310,12 +392,26 @@ const atualizarFormFields = async (episodioId) => {
   });
 };
 
+const handleAtualizarEpisodioClick = async (episodioId) => {
+  $formAtualizarEpisodio.reset();
+  openDialog('ATUALIZAR_EPISODIO');
+  await atualizarFormFields(episodioId);
+};
+
 const handleAtualizarEpisodioSubmitForm = async (e) => {
   const formData = new FormData(e.target);
 
-  await editEpisodio(formData);
+  const episodioEditado = await editEpisodio(formData);
+
+  if (!episodioEditado) return;
+
+  openNotification({
+    tipo: 'success',
+    mensagem: `Você já pode ver as edições do "${episodioEditado.titulo}" na listagem`,
+    titulo: 'Episódio atualizado com sucesso',
+  });
+
   atualizarEpisodios();
-  closeDialog();
 };
 
 /*
@@ -336,23 +432,18 @@ $formAdicionarEpisodio.addEventListener(
 );
 
 $listEpisodiosContainer.addEventListener('click', async (e) => {
-  if (e.target.dataset.js === 'delete-episodio-btn') {
-    const episodioId = Number(e.target.dataset.episodioId);
+  const episodioId = Number(e.target.dataset.episodioId);
 
-    if (episodioId && typeof episodioId === 'number') {
-      await deleteEpisodio(episodioId);
-      atualizarEpisodios();
-    }
+  if (!episodioId || typeof episodioId !== 'number') {
+    return;
+  }
+
+  if (e.target.dataset.js === 'delete-episodio-btn') {
+    handleDeleteEpisodioClick(episodioId);
   }
 
   if (e.target.dataset.js === 'atualizar-episodio-btn') {
-    const episodioId = Number(e.target.dataset.episodioId);
-
-    if (episodioId && typeof episodioId === 'number') {
-      $formAtualizarEpisodio.reset();
-      openDialog('ATUALIZAR_EPISODIO');
-      await atualizarFormFields(episodioId);
-    }
+    handleAtualizarEpisodioClick(episodioId);
   }
 });
 

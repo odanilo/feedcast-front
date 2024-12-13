@@ -32,6 +32,8 @@
   --red-200: #fecaca;
   --red-700: #991b1b;
 
+  --green-700: #15803d;
+
   --box-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
     0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
@@ -103,7 +105,7 @@ h5 {
   display: inline-flex;
   font-weight: 600;
   gap: 0.5rem;
-  padding: 0 0.5rem;
+  padding: 0.5rem 1rem;
 }
 
 .cta:hover {
@@ -177,6 +179,15 @@ h5 {
   border-top: solid 1px var(--gray-200);
   padding: 1rem 0 0 0;
   margin: 1.5rem 0 0 0;
+}
+
+.podcast-profile-empty {
+  background-color: #ffffff;
+  border: dashed 1px var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  text-align: center;
+  width: 100%;
 }
 
 /* Estilos para listagem */
@@ -300,6 +311,14 @@ h5 {
 
 .dialog--is-open {
   display: flex;
+}
+
+.dialog--error .dialog-header__title {
+  color: var(--red-700);
+}
+
+.dialog--success .dialog-header__title {
+  color: var(--green-700);
 }
 
 .dialog__header {
