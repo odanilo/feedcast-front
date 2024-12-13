@@ -76,7 +76,16 @@ h5 {
 }
 
 .view {
+  align-items: center;
+  display: none;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh;
   padding: var(--container-vertical-spacing) var(--container-horizontal-spacing);
+}
+
+.view--is-visible {
+  display: flex;
 }
 
 .container-wrapper {
@@ -123,6 +132,16 @@ h5 {
 
 .cta--primary:hover {
   background-color: var(--blue-900);
+}
+
+.cta--secondary {
+  background-color: transparent;
+  color: var(--blue-700);
+  border: solid 2px var(--blue-700);
+}
+
+.cta--secondary:hover {
+  background-color: var(--blue-50);
 }
 
 .cta-icon {
@@ -182,12 +201,28 @@ h5 {
 }
 
 .podcast-profile-empty {
+  align-items: center;
   background-color: #ffffff;
   border: dashed 1px var(--gray-300);
   border-radius: var(--border-radius);
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  padding: 3rem;
   text-align: center;
   width: 100%;
+}
+
+.podcast-profile-empty__icon {
+  color: var(--gray-400);
+  max-width: 140px;
+  width: 100%;
+}
+
+.podcast-profile-empty__actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 /* Estilos para listagem */

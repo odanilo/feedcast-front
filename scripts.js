@@ -46,6 +46,13 @@ const $listEpisodiosContainer = document.querySelector(
   '[data-js="list-episodios"]'
 );
 
+const $buttonAdicionarPerfil = document.querySelector(
+  '[data-js="btn-adicionar-perfil"]'
+);
+const $formAdicionarPerfil = document.querySelector(
+  '[data-js="form-adicionar-perfil"]'
+);
+
 /*
   --------------------------------------------------------------------------------------
   Função para manipular o dialog/modal
@@ -60,6 +67,7 @@ const openDialog = (dialogName) => {
     NOVO_EPISODIO: 'dialog-adicionar-episodio',
     ATUALIZAR_EPISODIO: 'dialog-atualizar-episodio',
     NOTIFICACAO: 'dialog-notification',
+    NOVO_PERFIL: 'dialog-adicionar-perfil',
   };
 
   const dialogToShow = document.querySelector(
@@ -120,6 +128,127 @@ const handleDialogClickEvents = (e) => {
   ) {
     closeDialog();
   }
+};
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para manipular views
+  --------------------------------------------------------------------------------------
+*/
+const showView = (viewName) => {
+  const views = {
+    EMPTY: 'NO-PROFILE',
+    CONTENT: 'LISTING',
+  };
+
+  const viewToShow = document.querySelector(
+    `[data-view-id="${views[viewName]}"]`
+  );
+
+  if (!viewToShow) {
+    throw new Error(`Nenhum view com nome ${viewName}`);
+  }
+
+  for (const view in views) {
+    const viewToHide = document.querySelector(
+      `[data-view-id="${views[view]}"]`
+    );
+
+    if (!viewToHide) {
+      throw new Error(`Nenhuma view com nome ${views[view]}`);
+    }
+
+    viewToHide.classList.remove('view--is-visible');
+  }
+
+  viewToShow.classList.add('view--is-visible');
+
+  return viewToShow;
+};
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para encontrar profile
+  --------------------------------------------------------------------------------------
+*/
+const getProfile = async () => {
+  try {
+    return await httpClient(`profile`);
+  } catch (error) {
+    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de buscar o seu perfil. ${errorMessage}`,
+      titulo: 'Falha ao buscar perfil',
+    });
+
+    console.error(errorMessage);
+  }
+};
+
+const inserirProfileHtml = (profile) => {
+  showView('CONTENT');
+
+  const $title = document.querySelector('[data-js="profile-title"]');
+  const $author = document.querySelector('[data-js="profile-author"]');
+  const $description = document.querySelector(
+    '[data-js="profile-description"]'
+  );
+  const $cover = document.querySelector('[data-js="profile-cover"]');
+
+  $title.textContent = profile.nome;
+  $author.textContent = profile.autor;
+  $description.textContent = profile.descricao;
+  $cover.setAttribute('src', profile.capa);
+  $cover.setAttribute('alt', `Capa do ${profile.nome}`);
+};
+
+const handleBuscarProfile = () => {
+  getProfile().then((profile) => {
+    if (!profile.nome) {
+      showView('EMPTY');
+      return;
+    }
+
+    inserirProfileHtml(profile);
+  });
+};
+
+handleBuscarProfile();
+
+/*
+  --------------------------------------------------------------------------------------
+  Funções para adicionar profile
+  --------------------------------------------------------------------------------------
+*/
+const postProfile = async (formData) => {
+  try {
+    return await httpClient('/profile', { body: formData });
+  } catch (error) {
+    closeDialog();
+    openNotification({
+      tipo: 'error',
+      mensagem: `Um erro aconteceu na hora de adicionar o seu perfil: ${error.message}`,
+      titulo: 'Falha ao adicionar perfil',
+    });
+  }
+};
+
+const handleAdicionarPerfilSubmitForm = async (e) => {
+  const formData = new FormData(e.target);
+  const perfilAdicionado = await postProfile(formData);
+
+  if (!perfilAdicionado) return;
+
+  openNotification({
+    tipo: 'success',
+    mensagem: `"${perfilAdicionado.nome}" foi adicionado com sucesso, você já pode adicionar episódios para escutar!`,
+    titulo: 'Perfil adicionado com sucesso',
+  });
+
+  inserirProfileHtml(perfilAdicionado);
 };
 
 /*
@@ -450,4 +579,14 @@ $listEpisodiosContainer.addEventListener('click', async (e) => {
 $formAtualizarEpisodio.addEventListener(
   'submit',
   handleAtualizarEpisodioSubmitForm
+);
+
+$buttonAdicionarPerfil.addEventListener('click', () => {
+  $formAdicionarPerfil.reset();
+  openDialog('NOVO_PERFIL');
+});
+
+$formAdicionarPerfil.addEventListener(
+  'submit',
+  handleAdicionarPerfilSubmitForm
 );
