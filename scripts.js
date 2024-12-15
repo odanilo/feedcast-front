@@ -67,7 +67,13 @@ const $formImportarFeed = document.querySelector(
 */
 const closeDialog = () => {
   $body.classList.remove('body--dialog-open');
+  document.removeEventListener('keydown', handleEscKeyOnModalOpen);
 };
+
+function handleEscKeyOnModalOpen(e) {
+  if (e.key !== 'Escape') return;
+  closeDialog();
+}
 
 const openDialog = (dialogName) => {
   const dialogs = {
@@ -102,6 +108,8 @@ const openDialog = (dialogName) => {
 
   dialogToShow.classList.add('dialog--is-open');
 
+  document.addEventListener('keydown', handleEscKeyOnModalOpen);
+
   return dialogToShow;
 };
 
@@ -130,7 +138,6 @@ const handleDialogClickEvents = (e) => {
   const elemento = e.target;
 
   if (
-    elemento.dataset.js === 'dialog-root' ||
     elemento.dataset.js === 'close-dialog-btn' ||
     elemento.dataset.js === 'cancel-dialog-btn'
   ) {
@@ -185,7 +192,7 @@ const getProfile = async () => {
   try {
     return await httpClient(`profile`);
   } catch (error) {
-    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+    const errorMessage = JSON.parse(error.message)?.message || error.message;
 
     closeDialog();
     openNotification({
@@ -391,7 +398,7 @@ const deleteEpisodio = async (episodioId) => {
       method: 'DELETE',
     });
   } catch (error) {
-    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+    const errorMessage = JSON.parse(error.message)?.message || error.message;
 
     closeDialog();
     openNotification({
@@ -427,10 +434,12 @@ const postEpisodio = async (formData) => {
   try {
     return await httpClient('/episodios', { body: formData });
   } catch (error) {
+    const errorMessage = JSON.parse(error.message)?.message || error.message;
+
     closeDialog();
     openNotification({
       tipo: 'error',
-      mensagem: `Um erro aconteceu na hora de adicionar o seu episódio: ${error.message}`,
+      mensagem: `Um erro aconteceu na hora de adicionar o seu episódio: ${errorMessage}`,
       titulo: 'Falha ao adicionar episódio',
     });
   }
@@ -460,7 +469,7 @@ const getEpisodio = async (episodioId) => {
   try {
     return await httpClient(`episodios/${episodioId}`);
   } catch (error) {
-    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+    const errorMessage = JSON.parse(error.message)?.message || error.message;
 
     closeDialog();
     openNotification({
@@ -491,7 +500,7 @@ const editEpisodio = async (formData) => {
       body: formData,
     });
   } catch (error) {
-    const errorMessage = error.message ? JSON.parse(error.message).message : '';
+    const errorMessage = JSON.parse(error.message)?.message || error.message;
 
     closeDialog();
     openNotification({
