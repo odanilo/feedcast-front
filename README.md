@@ -6,7 +6,15 @@ Projeto desenvolvido como entrega da Sprint 1 da disciplina de Full-Stack Básic
 
 ## Como executar
 
-Basta fazer o download do projeto e abrir o arquivo index.html no seu browser.
+Essa aplicação foi pensada para funcionar em conjunto com uma API para prover os dados. Portanto você deverá utilizar o [backend desse projeto](https://github.com/odanilo/feedcast-api) para poder utilizá-la funcionando por completo.
+
+Com a API rodando localmente, basta fazer o download/clone do projeto e abrir o arquivo `index.html` no seu browser.
+
+Caso esteja rodando a API em outra URL, altere a variável `API_URL` do arquivo `script.js`:
+
+```js
+const API_URL = 'http://127.0.0.1:5000';
+```
 
 ## Dados para utilizar para testar aplicação
 
